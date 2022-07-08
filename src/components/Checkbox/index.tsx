@@ -1,13 +1,30 @@
 import './index.less'
 import { BsCheck2 } from 'react-icons/bs'
+import { FC, useState } from 'react'
 
-export default function checkbox() {
+interface CheckboxProps {
+	isChecked: boolean
+	onChange: (value: boolean) => void
+}
+
+const Checkbox: FC<CheckboxProps> = (props) => {
+  const [state, setState] = useState<boolean>(props.isChecked)
 	return (
-		<div className='checkbox'>
-			<input className='checkbox-el' type='checkbox' id='checkbox' name='checkbox' />
-			<label htmlFor='checkbox' className='label'>
+		<span className='checkbox-container'>
+			<input
+				className='checkbox-el'
+				type='checkbox'
+				checked={state}
+				onChange={() => {
+					setState(!state)
+          props.onChange(!state)
+				}}
+			/>
+			<span>
 				<BsCheck2 />
-			</label>
-		</div>
+			</span>
+		</span>
 	)
 }
+
+export default Checkbox
