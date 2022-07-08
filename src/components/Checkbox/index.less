@@ -1,0 +1,38 @@
+.checkbox {
+	position: relative;
+	display: block;
+	.checkbox-el {
+		position: absolute;
+		opacity: 0;
+		&:checked + label svg {
+			display: inline-block;
+		}
+	}
+	label {
+		width: 25px;
+		height: 25px;
+		border-radius: 50%;
+		border: 1px solid #737373;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		svg {
+			display: none;
+		}
+	}
+	&:hover :not(.checkbox-el:checked) label svg {
+		display: inline-block;
+	}
+}
+
+@keyframes bounceIn {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}

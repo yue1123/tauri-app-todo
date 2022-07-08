@@ -1,0 +1,31 @@
+.App {
+	width: 100vw;
+	height: 100vh;
+	padding: 1rem;
+	&.light {
+		color: #555;
+		background: #fff;
+	}
+	&.dark {
+		color: #e2e2e2;
+		background: #1f1f1f;
+	}
+}
+
+.main-container {
+	h1 {
+		padding: 1rem 0;
+		border-bottom: 1px solid rgb(110, 110, 110);
+	}
+	.todo-list {
+		margin-top: 1rem;
+	}
+	.todo-item {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		.content {
+			margin-left: 15px;
+		}
+	}
+}
