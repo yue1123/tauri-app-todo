@@ -1,6 +1,7 @@
 .App {
   width: 100vw;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
   padding: 1rem;
 
   &.light {
@@ -38,12 +39,17 @@
       .text{
         margin-bottom: .5rem;
       }
+      .desc{
+        color: #656565;
+      }
       .time{
         margin-top: 5px;
         font-size: 12px;
+        color:#828282;
       }
     }
-    &.status-completed .content .text {
+    &.status-completed .content .text,
+    &.status-completed .content .desc {
       text-decoration: line-through;
     }
   }

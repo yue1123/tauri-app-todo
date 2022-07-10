@@ -2,36 +2,25 @@ import { useState } from 'react'
 
 import Checkbox from '../../components/Checkbox'
 import AddNew from '../../components/AddNew'
+import moment from 'moment'
 export interface TodoItem {
 	id: number
 	content: string
 	isCompleted: boolean
 	description?: string
-	time?: Date
+	time?: moment.Moment
 	isLink?: boolean
 }
+const today = moment().startOf('hour')
 
 function Main() {
+  
 	const [todoList, setTodoList] = useState<TodoItem[]>([
 		{
 			id: 1,
 			content: '看书读报,了解世界',
 			isCompleted: true,
-			time: new Date(),
-			isLink: false
-		},
-		{
-			id: 2,
-			content: '吃饭睡觉打豆豆',
-			isCompleted: false,
-			time: new Date(),
-			isLink: false
-		},
-		{
-			id: 3,
-			content: '吃饭睡觉打豆豆',
-			isCompleted: false,
-			time: new Date(),
+			time: moment(new Date('2022.7.15')),
 			isLink: false
 		}
 	])
@@ -55,13 +44,31 @@ function Main() {
 							/>
 							<div className='content'>
 								<p className='text'>{item.content}</p>
-								{item.time && <p className='time'>{item.time.toLocaleDateString()}</p>}
+								<p className='desc'>{item.description}</p>
+								{item.time && (
+									<p className='time'>
+										{item.time.calendar(today, {
+											sameDay: '[今天]',
+											nextDay: '[明天]',
+											nextWeek: 'dddd',
+											lastDay: '[昨天]',
+											lastWeek: '[上个] dddd',
+											sameElse: 'YYYY/MM/DD'
+										})}
+									</p>
+								)}
 							</div>
 						</div>
 					)
 				})}
 			</div>
-			<AddNew></AddNew>
+			<AddNew
+				onAdd={(todoData) => {
+					const id = todoList.length ? todoList[todoList.length - 1]!.id + 1 : 1
+					const _todoData: TodoItem = { ...todoData, id }
+					setTodoList([...todoList, _todoData])
+				}}
+			></AddNew>
 		</div>
 	)
 }
