@@ -16,9 +16,32 @@
 }
 
 .main-container {
-  h1 {
-    padding: 1rem 0;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      padding: 1rem 0;
+      margin: 0;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+
+      span.status {
+        min-width: 42px;
+        text-align: right;
+      }
+
+      span.icon {
+        margin-left: 5px;
+      }
+    }
   }
+
 
   .todo-list {
     margin-top: 1rem;
@@ -29,29 +52,59 @@
     justify-content: flex-start;
     align-items: flex-start;
     border-bottom: 1px solid #363636;
-    padding:7.5px 0;
+    padding: 10px 0;
     margin-bottom: 10px 0;
+
+    &:hover .handle-bar {
+      opacity: 1;
+    }
+
+    .handle-bar {
+      opacity: 0;
+      padding: 2px 5px;
+      border-radius: 4px;
+      cursor: move;
+      transition: .3s opacity background;
+      margin-right: 5px;
+
+      &:hover {
+        background: #262626;
+      }
+    }
+
+    .content-container {
+      flex: 1;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+
     .content {
       margin-left: 15px;
+
       p {
         margin-bottom: 0;
       }
-      .text{
+
+      .text {
         margin-bottom: .5rem;
       }
-      .desc{
+
+      .desc {
         color: #656565;
       }
-      .time{
+
+      .time {
         margin-top: 5px;
         font-size: 12px;
-        color:#828282;
+        color: #828282;
       }
     }
+
     &.status-completed .content .text,
     &.status-completed .content .desc {
       text-decoration: line-through;
     }
   }
-  
+
 }

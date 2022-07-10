@@ -6,6 +6,7 @@ import { Button, DatePicker, Space } from 'antd'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import type { TodoItem } from '../../views/main/index'
 import moment from 'moment'
+// import { useRef } from 'react'
 
 type _TodoItem = Omit<TodoItem, 'id'>
 interface AddNewProps {
@@ -21,6 +22,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 	}
 	const [showInput, setShowInput] = useState<boolean>(false)
 	const [todoData, setTodoData] = useState<_TodoItem>(defaultValue)
+  // const titleInput = useRef<HTMLInputElement>(null)
 	return (
 		<div className='add-new'>
 			{showInput && (
@@ -29,6 +31,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 						<div>
 							<div className='title-input'>
 								<input
+									// ref={titleInput}
 									type='text'
 									placeholder='例如: 周日看书 1 小时'
 									value={todoData.content}
