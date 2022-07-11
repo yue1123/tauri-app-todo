@@ -33,7 +33,6 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 })
 
 function Main() {
-  // FIXME: 改变状态拖拽排序无效
   const statusMap: Record<string, string> = {
 		0: '全部',
 		1: '已完成',
@@ -49,7 +48,7 @@ function Main() {
 		},
 		{
 			id: '2',
-			content: '看书读报,了解世界',
+			content: '看书读报,了解世界1',
 			isCompleted: true,
 			time: moment(),
 			isLink: false
@@ -65,7 +64,6 @@ function Main() {
 			return todoList.filter((item) => !!item.isCompleted === false)
 		}
 	}, [currentStatus, todoList])
-  console.log(todoList)
 	return (
 		<div className='main-container'>
 			<div className='header'>

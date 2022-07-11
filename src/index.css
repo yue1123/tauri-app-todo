@@ -3,13 +3,30 @@ body {
 		'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
 }
 
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+	width: 3px;
+}
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+	border-radius: 3px;
+	background: rgb(108, 108, 108);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background: rgb(108, 108, 108);
 }

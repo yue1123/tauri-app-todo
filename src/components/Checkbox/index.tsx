@@ -1,6 +1,6 @@
 import './index.less'
 import { BsCheck2 } from 'react-icons/bs'
-import { FC, useState } from 'react'
+import { FC, useState, memo } from 'react'
 
 interface CheckboxProps {
 	isChecked: boolean
@@ -8,7 +8,7 @@ interface CheckboxProps {
 }
 
 const Checkbox: FC<CheckboxProps> = (props) => {
-  const [state, setState] = useState<boolean>(props.isChecked)
+	const [state, setState] = useState<boolean>(props.isChecked)
 	return (
 		<span className='checkbox-container'>
 			<input
@@ -17,7 +17,7 @@ const Checkbox: FC<CheckboxProps> = (props) => {
 				checked={state}
 				onChange={() => {
 					setState(!state)
-          props.onChange(!state)
+					props.onChange(!state)
 				}}
 			/>
 			<span>
@@ -27,4 +27,4 @@ const Checkbox: FC<CheckboxProps> = (props) => {
 	)
 }
 
-export default Checkbox
+export default memo(Checkbox)

@@ -1,110 +1,108 @@
 .App {
-  width: 100vw;
-  height: 100%;
-  min-height: 100vh;
-  padding: 1rem;
+	max-width: 100vw;
+	height: 100%;
+	min-height: 100vh;
+	padding: 1rem;
+	overflow-x: hidden;
+	&.light {
+		color: #555;
+		background: #fff;
+	}
 
-  &.light {
-    color: #555;
-    background: #fff;
-  }
-
-  &.dark {
-    color: #e2e2e2;
-    background: #1f1f1f;
-  }
+	&.dark {
+		color: #e2e2e2;
+		background: #1f1f1f;
+	}
 }
 
 .main-container {
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 
-    h1 {
-      padding: 1rem 0;
-      margin: 0;
-    }
+		h1 {
+			padding: 1rem 0;
+			margin: 0;
+		}
 
-    button {
-      display: flex;
-      align-items: center;
-      line-height: 1;
+		button {
+			display: flex;
+			align-items: center;
+			line-height: 1;
 
-      span.status {
-        min-width: 42px;
-        text-align: right;
-      }
+			span.status {
+				min-width: 42px;
+				text-align: right;
+			}
 
-      span.icon {
-        margin-left: 5px;
-      }
-    }
-  }
+			span.icon {
+				margin-left: 5px;
+			}
+		}
+	}
 
+	.todo-list {
+		margin-top: 1rem;
+	}
 
-  .todo-list {
-    margin-top: 1rem;
-  }
+	.todo-item {
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		border-bottom: 1px solid #363636;
+		padding: 10px 0;
+		margin-bottom: 10px 0;
 
-  .todo-item {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    border-bottom: 1px solid #363636;
-    padding: 10px 0;
-    margin-bottom: 10px 0;
+		&:hover .handle-bar {
+			opacity: 1;
+		}
 
-    &:hover .handle-bar {
-      opacity: 1;
-    }
+		.handle-bar {
+			opacity: 0;
+			padding: 2px 5px;
+			border-radius: 4px;
+			cursor: move;
+			transition: 0.3s opacity background;
+			margin-right: 5px;
 
-    .handle-bar {
-      opacity: 0;
-      padding: 2px 5px;
-      border-radius: 4px;
-      cursor: move;
-      transition: .3s opacity background;
-      margin-right: 5px;
+			&:hover {
+				background: #262626;
+			}
+		}
 
-      &:hover {
-        background: #262626;
-      }
-    }
+		.content-container {
+			flex: 1;
+			display: flex;
+			justify-content: flex-start;
+			align-items: flex-start;
+		}
 
-    .content-container {
-      flex: 1;
-      display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-    }
+		.content {
+			margin-left: 15px;
 
-    .content {
-      margin-left: 15px;
+			p {
+				margin-bottom: 0;
+			}
 
-      p {
-        margin-bottom: 0;
-      }
+			.text {
+				margin-bottom: 0.5rem;
+			}
 
-      .text {
-        margin-bottom: .5rem;
-      }
+			.desc {
+				color: #656565;
+			}
 
-      .desc {
-        color: #656565;
-      }
+			.time {
+				margin-top: 5px;
+				font-size: 12px;
+				color: #828282;
+			}
+		}
 
-      .time {
-        margin-top: 5px;
-        font-size: 12px;
-        color: #828282;
-      }
-    }
-
-    &.status-completed .content .text,
-    &.status-completed .content .desc {
-      text-decoration: line-through;
-    }
-  }
-
+		&.status-completed .content .text,
+		&.status-completed .content .desc {
+			text-decoration: line-through;
+		}
+	}
 }
