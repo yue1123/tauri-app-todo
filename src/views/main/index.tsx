@@ -1,4 +1,4 @@
-import {  useState,useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 
 import Checkbox from '../../components/Checkbox'
 import AddNew from '../../components/AddNew'
@@ -6,6 +6,7 @@ import moment from 'moment'
 import { Button, Dropdown, Empty, Menu } from 'antd'
 import { BsFilterRight } from 'react-icons/bs'
 import { MdDragIndicator } from 'react-icons/md'
+import { FiMoreHorizontal } from 'react-icons/fi'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 export interface TodoItem {
@@ -33,29 +34,14 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 })
 
 function Main() {
-  const statusMap: Record<string, string> = {
+	const statusMap: Record<string, string> = {
 		0: '全部',
 		1: '已完成',
 		2: '未完成'
 	}
-	const [todoList, setTodoList] = useState<TodoItem[]>([
-		// {
-		// 	id: '1',
-		// 	content: '看书读报,了解世界',
-		// 	isCompleted: true,
-		// 	time: moment(),
-		// 	isLink: false
-		// },
-		// {
-		// 	id: '2',
-		// 	content: '看书读报,了解世界1',
-		// 	isCompleted: true,
-		// 	time: moment(),
-		// 	isLink: false
-		// }
-	])
-  const [currentStatus, setCurrentStatus] = useState<string>('0')
-  const filterList = useMemo(() => {
+	const [todoList, setTodoList] = useState<TodoItem[]>([])
+	const [currentStatus, setCurrentStatus] = useState<string>('0')
+	const filterList = useMemo(() => {
 		if (currentStatus === '0') {
 			return todoList
 		} else if (currentStatus === '1') {
@@ -64,6 +50,34 @@ function Main() {
 			return todoList.filter((item) => !!item.isCompleted === false)
 		}
 	}, [currentStatus, todoList])
+	// addNew 组件应用
+	const addNewComRef = useRef<any>(null)
+	// 添加
+	const handleAddNew = (todoData: Omit<TodoItem, 'id'>) => {
+		if ((todoData as TodoItem).id) {
+			const index = todoList.findIndex((item) => item.id === (todoData as TodoItem).id)
+			const _todoList = todoList.slice()
+			_todoList.splice(index, 1, todoData as TodoItem)
+			setTodoList(_todoList)
+		} else {
+			const id = todoList.length ? todoList[todoList.length - 1]!.id + 1 : 1
+			const _todoData: TodoItem = { ...todoData, id: String(id) }
+			setTodoList([...todoList, _todoData])
+		}
+	}
+	// 更多操作
+	const handleMoreAction = (key: 'delete' | 'edit', todoData: TodoItem) => {
+		if (key === 'delete') {
+			const index = todoList.findIndex((item) => item.id === todoData.id)
+			const _todoList = todoList.slice()
+			_todoList.splice(index, 1)
+			setTodoList(_todoList)
+		} else if (key === 'edit') {
+			if (addNewComRef.current) {
+				addNewComRef.current.edit(todoData)
+			}
+		}
+	}
 	return (
 		<div className='main-container'>
 			<div className='header'>
@@ -109,7 +123,11 @@ function Main() {
 							if (!result.destination) {
 								return
 							}
-							const items = reorder(todoList, result.source.index, result.destination.index)
+							const items = reorder(
+								todoList,
+								result.source.index,
+								result.destination.index
+							)
 							setTodoList(items)
 						}}
 					>
@@ -117,15 +135,32 @@ function Main() {
 							{(provided, snapshot) => (
 								<div {...provided.droppableProps} ref={provided.innerRef}>
 									{filterList.map((item, index) => (
-										<Draggable key={item.id} draggableId={item.id} index={index}>
+										<Draggable
+											key={item.id}
+											draggableId={item.id}
+											index={index}
+										>
 											{(provided, snapshot) => (
 												<div
 													ref={provided.innerRef}
 													{...provided.draggableProps}
-													style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-													className={['todo-item', `status-${item.isCompleted ? 'completed' : 'normal'}`].join(' ')}
+													style={getItemStyle(
+														snapshot.isDragging,
+														provided.draggableProps.style
+													)}
+													className={[
+														'todo-item',
+														`status-${
+															item.isCompleted
+																? 'completed'
+																: 'normal'
+														}`
+													].join(' ')}
 												>
-													<div className='handle-bar' {...provided.dragHandleProps}>
+													<div
+														className='handle-bar'
+														{...provided.dragHandleProps}
+													>
 														<MdDragIndicator />
 													</div>
 													<div className='content-container'>
@@ -139,7 +174,9 @@ function Main() {
 														/>
 														<div className='content'>
 															<p className='text'>{item.content}</p>
-															<p className='desc'>{item.description}</p>
+															<p className='desc'>
+																{item.description}
+															</p>
 															{item.time && (
 																<p className='time'>
 																	{item.time.calendar(today, {
@@ -154,6 +191,40 @@ function Main() {
 															)}
 														</div>
 													</div>
+													<Dropdown
+														overlay={
+															<Menu
+																defaultSelectedKeys={[
+																	currentStatus
+																]}
+																selectedKeys={[currentStatus]}
+																onClick={(menuItem) => {
+																	handleMoreAction(
+																		menuItem.key as
+																			| 'delete'
+																			| 'edit',
+																		item
+																	)
+																}}
+																items={[
+																	{
+																		label: '编辑',
+																		key: 'edit'
+																	},
+																	{
+																		label: '删除',
+																		key: 'delete'
+																	}
+																]}
+															/>
+														}
+													>
+														<Button
+															type='text'
+															size='small'
+															icon={<FiMoreHorizontal />}
+														></Button>
+													</Dropdown>
 												</div>
 											)}
 										</Draggable>
@@ -167,13 +238,7 @@ function Main() {
 					<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
 				)}
 			</div>
-			<AddNew
-				onAdd={(todoData) => {
-					const id = todoList.length ? todoList[todoList.length - 1]!.id + 1 : 1
-					const _todoData: TodoItem = { ...todoData, id: String(id) }
-					setTodoList([...todoList, _todoData])
-				}}
-			></AddNew>
+			<AddNew cRef={addNewComRef} onAdd={handleAddNew}></AddNew>
 		</div>
 	)
 }

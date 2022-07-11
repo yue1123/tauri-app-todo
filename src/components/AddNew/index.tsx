@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useState, useImperativeHandle, useEffect } from 'react'
 
 import { AiOutlinePlus } from 'react-icons/ai'
 import './index.less'
@@ -11,18 +11,32 @@ import moment from 'moment'
 type _TodoItem = Omit<TodoItem, 'id'>
 interface AddNewProps {
 	onAdd: (value: _TodoItem) => void
+	cRef: any
 }
 
 const AddNew: FC<AddNewProps> = (props) => {
-  const defaultValue = {
+	const defaultValue = {
 		content: '',
 		description: '',
 		time: undefined,
 		isCompleted: false
 	}
+	const OP_TEXT_MAP: Record<string, string> = {
+		edit: '保存编辑',
+		new: '添加任务'
+	}
 	const [showInput, setShowInput] = useState<boolean>(false)
-	const [todoData, setTodoData] = useState<_TodoItem>(defaultValue)
-  // const titleInput = useRef<HTMLInputElement>(null)
+	const [todoData, setTodoData] = useState<_TodoItem | TodoItem>(defaultValue)
+	const [op, setOp] = useState('new')
+	useImperativeHandle(props.cRef, () => ({
+		edit: (todoData: TodoItem) => {
+			setShowInput(true)
+			setTodoData(todoData)
+		}
+	}))
+	useEffect(() => {
+		setOp((todoData as TodoItem).id ? 'edit' : 'new')
+	}, [(todoData as TodoItem).id])
 	return (
 		<div className='add-new'>
 			{showInput && (
@@ -78,6 +92,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 								type='default'
 								onClick={() => {
 									setShowInput(false)
+									setTodoData(defaultValue)
 								}}
 							>
 								取消
@@ -90,7 +105,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 									setTodoData(defaultValue)
 								}}
 							>
-								添加任务
+								{OP_TEXT_MAP[op]}
 							</Button>
 						</Space>
 					</div>
