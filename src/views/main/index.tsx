@@ -209,7 +209,7 @@ function Main() {
 																items={[
 																	{
 																		label: '编辑',
-																		key: 'edit'
+																		key: 'edit',
 																	},
 																	{
 																		label: '删除',
@@ -220,6 +220,7 @@ function Main() {
 														}
 													>
 														<Button
+															className='more-op'
 															type='text'
 															size='small'
 															icon={<FiMoreHorizontal />}

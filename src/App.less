@@ -57,13 +57,18 @@
 		&:hover .handle-bar {
 			opacity: 1;
 		}
-
+		&:hover .more-op {
+			opacity: 1;
+		}
+		.more-op {
+			opacity: 0;
+		}
 		.handle-bar {
 			opacity: 0;
 			padding: 2px 5px;
 			border-radius: 4px;
 			cursor: move;
-			transition: 0.3s opacity background;
+			transition: 0.3s opacity;
 			margin-right: 5px;
 
 			&:hover {
