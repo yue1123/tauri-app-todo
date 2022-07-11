@@ -39,20 +39,20 @@ function Main() {
 		2: '未完成'
 	}
 	const [todoList, setTodoList] = useState<TodoItem[]>([
-		{
-			id: '1',
-			content: '看书读报,了解世界',
-			isCompleted: true,
-			time: moment(),
-			isLink: false
-		},
-		{
-			id: '2',
-			content: '看书读报,了解世界1',
-			isCompleted: true,
-			time: moment(),
-			isLink: false
-		}
+		// {
+		// 	id: '1',
+		// 	content: '看书读报,了解世界',
+		// 	isCompleted: true,
+		// 	time: moment(),
+		// 	isLink: false
+		// },
+		// {
+		// 	id: '2',
+		// 	content: '看书读报,了解世界1',
+		// 	isCompleted: true,
+		// 	time: moment(),
+		// 	isLink: false
+		// }
 	])
   const [currentStatus, setCurrentStatus] = useState<string>('0')
   const filterList = useMemo(() => {
