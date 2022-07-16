@@ -5,9 +5,8 @@
 	width: 18px;
 	height: 18px;
 	margin-top: 2px;
-	cursor: pointer;
-
 	input {
+    cursor: pointer;
 		position: absolute;
 		opacity: 0;
 		width: 100%;
@@ -17,9 +16,6 @@
 		&:checked + span svg {
 			opacity: 1;
 		}
-		// &:active:checked + span svg {
-		// 	animation: bounceIn 0.5s forwards;
-		// }
 	}
 
 	span {
@@ -28,7 +24,7 @@
 		height: 100%;
 		border-radius: 50%;
 		cursor: pointer;
-		border: 1px solid #363636;
+		border: 1px solid var(--border-color1);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -39,17 +35,3 @@
 		}
 	}
 }
-
-// @keyframes bounceIn {
-// 	0% {
-// 		transform: scale(0.5);
-// 	}
-
-// 	50% {
-// 		transform: scale(1.2);
-// 	}
-
-// 	100% {
-// 		transform: scale(1);
-// 	}
-// }

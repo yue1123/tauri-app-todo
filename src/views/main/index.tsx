@@ -1,13 +1,19 @@
-import { useState, useMemo, useRef } from 'react'
-
-import Checkbox from '../../components/Checkbox'
-import AddNew from '../../components/AddNew'
+import { useState, useMemo, useRef, FC } from 'react'
 import moment from 'moment'
 import { Button, Dropdown, Empty, Menu } from 'antd'
-import { BsFilterRight } from 'react-icons/bs'
-import { MdDragIndicator } from 'react-icons/md'
+import { BsListTask, BsList, BsFillSunFill, BsMoonStarsFill, BsLaptop } from 'react-icons/bs'
+import { MdDragIndicator, MdOutlineFileDownloadDone } from 'react-icons/md'
 import { FiMoreHorizontal } from 'react-icons/fi'
+import { AiFillPushpin } from 'react-icons/ai'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+
+import './index.less'
+import Checkbox from '../../components/Checkbox'
+import AddNew from '../../components/AddNew'
+import { ThemeValue } from '../../hooks/useTheme'
+import useWindowTop from '../../hooks/useWindowTop'
+import EMPTY_IMAGE_LIGHT from '../../static/empty-light.svg'
+import EMPTY_IMAGE_DARK from '../../static/empty-dark.svg'
 
 export interface TodoItem {
 	id: string
@@ -16,6 +22,17 @@ export interface TodoItem {
 	description?: string
 	time?: moment.Moment
 	isLink?: boolean
+}
+
+export interface MainProps {
+	changeTheme: (theme: ThemeValue) => void
+	theme: ThemeValue
+	autoTheme: Exclude<ThemeValue, 'auto'>
+}
+
+const EMPTY_IMAGE: Record<'light' | 'dark', string> = {
+	light: EMPTY_IMAGE_LIGHT,
+	dark: EMPTY_IMAGE_DARK
 }
 const today = moment().startOf('hour')
 
@@ -27,20 +44,31 @@ const reorder = (list: TodoItem[], startIndex: number, endIndex: number) => {
 	return result
 }
 
-const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+const getItemStyle = (isDragging: boolean, draggableStyle: any, background?: string) => ({
 	userSelect: 'none',
-	background: isDragging ? '#262626' : 'none',
+	background: isDragging ? 'var(--button-hover-bg)' : 'none',
 	...draggableStyle
-})
+})  
 
-function Main() {
-	const statusMap: Record<string, string> = {
-		0: '全部',
-		1: '已完成',
-		2: '未完成'
+const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
+	const statusWithIconMap: Record<string, JSX.Element> = {
+		0: <BsList size={18} />,
+		1: <MdOutlineFileDownloadDone size={18} />,
+		2: <BsListTask size={18} />
 	}
+
+	const themeWithIconMap: Record<string, JSX.Element> = {
+		light: <BsFillSunFill size={17} />,
+		dark: <BsMoonStarsFill size={17} />,
+		auto: <BsLaptop size={17} />
+	}
+	// 窗口置顶
+	const { isTop, toggleTop } = useWindowTop()
+	// todo list data
 	const [todoList, setTodoList] = useState<TodoItem[]>([])
+	// 当前 todo list 过滤状态
 	const [currentStatus, setCurrentStatus] = useState<string>('0')
+	// status 过滤后的 todo list
 	const filterList = useMemo(() => {
 		if (currentStatus === '0') {
 			return todoList
@@ -78,42 +106,91 @@ function Main() {
 			}
 		}
 	}
+
+  const realTheme = useMemo(() => {
+		return theme === 'auto' ? autoTheme : theme
+	}, [theme, autoTheme])
+
 	return (
 		<div className='main-container'>
 			<div className='header'>
 				<h1>Todo List</h1>
-				<Dropdown
-					overlay={
-						<Menu
-							defaultSelectedKeys={[currentStatus]}
-							selectedKeys={[currentStatus]}
-							onClick={(item) => {
-								setCurrentStatus(item.key)
-							}}
-							items={[
-								{
-									label: '全部',
-									key: '0'
-								},
-								{
-									label: '已完成',
-									key: '1'
-								},
-								{
-									label: '未完成',
-									key: '2'
-								}
-							]}
-						/>
-					}
-				>
-					<Button type='text'>
-						<span className='status'>{statusMap[currentStatus]}</span>
-						<span className='icon'>
-							<BsFilterRight />
-						</span>
+				<div className='right'>
+					<Button type='text' onClick={() => toggleTop()}>
+						<AiFillPushpin
+							color={isTop ? 'var(--antd-wave-shadow-color)' : 'var(--text-color)'}
+							size={18}
+						></AiFillPushpin>
 					</Button>
-				</Dropdown>
+					<Dropdown
+						arrow
+						placement='bottomRight'
+						overlay={
+							<Menu
+								defaultSelectedKeys={[theme]}
+								selectedKeys={[theme]}
+								onClick={({ key }) => {
+									setTimeout(() => {
+										changeTheme(key as ThemeValue)
+									}, 300)
+								}}
+								items={[
+									{
+										label: '浅色',
+										key: 'light',
+										icon: themeWithIconMap['light']
+									},
+									{
+										label: 'dark',
+										key: 'dark',
+										icon: themeWithIconMap['dark']
+									},
+									{
+										label: '跟随系统',
+										key: 'auto',
+										icon: themeWithIconMap['auto']
+									}
+								]}
+							/>
+						}
+					>
+						<Button type='text'>{themeWithIconMap[theme]}</Button>
+					</Dropdown>
+					<Dropdown
+						arrow
+						placement='bottomRight'
+						overlay={
+							<Menu
+								defaultSelectedKeys={[currentStatus]}
+								selectedKeys={[currentStatus]}
+								onClick={(item) => {
+									setCurrentStatus(item.key)
+								}}
+								items={[
+									{
+										label: '全部',
+										key: '0',
+										icon: statusWithIconMap[0]
+									},
+									{
+										label: '已完成',
+										key: '1',
+										icon: statusWithIconMap[1]
+									},
+									{
+										label: '未完成',
+										key: '2',
+										icon: statusWithIconMap[2]
+									}
+								]}
+							/>
+						}
+					>
+						<Button type='text' className='status-icon'>
+							<span className='icon'>{statusWithIconMap[currentStatus]}</span>
+						</Button>
+					</Dropdown>
+				</div>
 			</div>
 
 			<div className='todo-list'>
@@ -123,11 +200,7 @@ function Main() {
 							if (!result.destination) {
 								return
 							}
-							const items = reorder(
-								todoList,
-								result.source.index,
-								result.destination.index
-							)
+							const items = reorder(todoList, result.source.index, result.destination.index)
 							setTodoList(items)
 						}}
 					>
@@ -135,32 +208,19 @@ function Main() {
 							{(provided, snapshot) => (
 								<div {...provided.droppableProps} ref={provided.innerRef}>
 									{filterList.map((item, index) => (
-										<Draggable
-											key={item.id}
-											draggableId={item.id}
-											index={index}
-										>
+										<Draggable key={item.id} draggableId={item.id} index={index}>
 											{(provided, snapshot) => (
 												<div
 													ref={provided.innerRef}
 													{...provided.draggableProps}
-													style={getItemStyle(
-														snapshot.isDragging,
-														provided.draggableProps.style
-													)}
+													style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
 													className={[
 														'todo-item',
-														`status-${
-															item.isCompleted
-																? 'completed'
-																: 'normal'
-														}`
+														`status-${item.isCompleted ? 'completed' : 'normal'}`,
+														`${snapshot.isDragging ? 'dragging' : ''}`
 													].join(' ')}
 												>
-													<div
-														className='handle-bar'
-														{...provided.dragHandleProps}
-													>
+													<div className='handle-bar' {...provided.dragHandleProps}>
 														<MdDragIndicator />
 													</div>
 													<div className='content-container'>
@@ -174,9 +234,7 @@ function Main() {
 														/>
 														<div className='content'>
 															<p className='text'>{item.content}</p>
-															<p className='desc'>
-																{item.description}
-															</p>
+															<p className='desc'>{item.description}</p>
 															{item.time && (
 																<p className='time'>
 																	{item.time.calendar(today, {
@@ -194,22 +252,15 @@ function Main() {
 													<Dropdown
 														overlay={
 															<Menu
-																defaultSelectedKeys={[
-																	currentStatus
-																]}
+																defaultSelectedKeys={[currentStatus]}
 																selectedKeys={[currentStatus]}
 																onClick={(menuItem) => {
-																	handleMoreAction(
-																		menuItem.key as
-																			| 'delete'
-																			| 'edit',
-																		item
-																	)
+																	handleMoreAction(menuItem.key as 'delete' | 'edit', item)
 																}}
 																items={[
 																	{
 																		label: '编辑',
-																		key: 'edit',
+																		key: 'edit'
 																	},
 																	{
 																		label: '删除',
@@ -219,12 +270,7 @@ function Main() {
 															/>
 														}
 													>
-														<Button
-															className='more-op'
-															type='text'
-															size='small'
-															icon={<FiMoreHorizontal />}
-														></Button>
+														<Button className='more-op' type='text' size='small' icon={<FiMoreHorizontal />}></Button>
 													</Dropdown>
 												</div>
 											)}
@@ -236,7 +282,7 @@ function Main() {
 						</Droppable>
 					</DragDropContext>
 				) : (
-					<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+					<Empty description={'全部都完成啦!!'} image={EMPTY_IMAGE[realTheme]} />
 				)}
 			</div>
 			<AddNew cRef={addNewComRef} onAdd={handleAddNew}></AddNew>

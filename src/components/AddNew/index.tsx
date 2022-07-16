@@ -6,7 +6,6 @@ import { Button, DatePicker, Space } from 'antd'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import type { TodoItem } from '../../views/main/index'
 import moment from 'moment'
-// import { useRef } from 'react'
 
 type _TodoItem = Omit<TodoItem, 'id'>
 interface AddNewProps {
