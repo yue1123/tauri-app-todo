@@ -18,6 +18,7 @@ function App() {
 		if (config.theme === 'auto') {
       themeMedia = window.matchMedia('(prefers-color-scheme: light)')
       themeMedia.addEventListener('change', fn)
+      fn(themeMedia)
 		} else {
 			// 不是跟随主题,就清楚主题监听
 			clear()
@@ -25,7 +26,7 @@ function App() {
 		return clear
 	}, [config.theme === 'auto'])
   const theme = config.theme === 'auto' ? config.autoTheme : config.theme
-  console.log(config, theme)
+  // console.log(config, theme)
 	return (
 		<div className={`App ${theme}`}>
 			<ConfigProvider prefixCls={theme}>

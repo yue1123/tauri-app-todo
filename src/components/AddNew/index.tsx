@@ -27,6 +27,17 @@ const AddNew: FC<AddNewProps> = (props) => {
 	const [showInput, setShowInput] = useState<boolean>(false)
 	const [todoData, setTodoData] = useState<_TodoItem | TodoItem>(defaultValue)
 	const [op, setOp] = useState('new')
+	// 添加 todo
+	const handleAdd = () => {
+		props.onAdd(todoData)
+		setTodoData(defaultValue)
+	}
+	// 处理 enter
+	const handleKeyUp = (e: any) => {
+		if ((e.key === 'Enter' || e.keyCode === 13) && todoData.content) {
+			handleAdd()
+		}
+	}
 	useImperativeHandle(props.cRef, () => ({
 		edit: (todoData: TodoItem) => {
 			setShowInput(true)
@@ -48,6 +59,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 									type='text'
 									placeholder='例如: 周日看书 1 小时'
 									value={todoData.content}
+									onKeyUp={(e) => handleKeyUp(e)}
 									onChange={(e: any) => {
 										setTodoData({
 											...todoData,
@@ -61,6 +73,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 									type='text'
 									placeholder='描述'
 									value={todoData.description}
+									onKeyUp={(e) => handleKeyUp(e)}
 									onChange={(e: any) => {
 										setTodoData({
 											...todoData,
@@ -96,14 +109,7 @@ const AddNew: FC<AddNewProps> = (props) => {
 							>
 								取消
 							</Button>
-							<Button
-								type='primary'
-								disabled={!todoData.content}
-								onClick={() => {
-									props.onAdd(todoData)
-									setTodoData(defaultValue)
-								}}
-							>
+							<Button type='primary' disabled={!todoData.content} onClick={handleAdd}>
 								{OP_TEXT_MAP[op]}
 							</Button>
 						</Space>

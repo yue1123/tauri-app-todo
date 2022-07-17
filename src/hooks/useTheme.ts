@@ -1,4 +1,5 @@
-import { useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
+import useLocalStorage,{storageKey} from './useLocalStorage'
 
 export type ThemeValue = 'dark' | 'light' | 'auto'
 export interface InitState {
@@ -6,9 +7,8 @@ export interface InitState {
 	autoTheme: Exclude<ThemeValue, 'auto'>
 }
 
-
 const initState: InitState = {
-	theme: 'light',
+	theme: 'dark',
 	autoTheme: window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
 }
 
@@ -24,15 +24,20 @@ function reducer(state: InitState, action: any): InitState {
 				...state,
 				theme: action.payload
 			}
-      case ACTION.SET_AUTO_THEME:
-        return {
-					...state,
-					autoTheme: action.payload
-				}
+		case ACTION.SET_AUTO_THEME:
+			return {
+				...state,
+				autoTheme: action.payload
+			}
 	}
-  return state
+	return state
 }
 
 export default function useTheme(){
-  return useReducer(reducer, initState)
+  const { data, set } = useLocalStorage<InitState>(storageKey.THEME_CONFIG)
+  const _reducer = useReducer(reducer, data || initState)
+  useEffect(() => {
+		set(_reducer[0])
+	}, [_reducer[0]])
+  return _reducer
 }

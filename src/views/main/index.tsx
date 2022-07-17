@@ -1,20 +1,24 @@
-import { useState, useMemo, useRef, FC } from 'react'
+import { useState, useMemo, useRef, FC, useEffect } from 'react'
 import moment from 'moment'
-import { Button, Dropdown, Empty, Menu } from 'antd'
-import { BsListTask, BsList, BsFillSunFill, BsMoonStarsFill, BsLaptop } from 'react-icons/bs'
+import { Button, Dropdown, Empty, Menu, Tooltip } from 'antd'
+import { BsListNested, BsListStars, BsFillSunFill, BsMoonStarsFill, BsLaptop } from 'react-icons/bs'
 import { MdDragIndicator, MdOutlineFileDownloadDone } from 'react-icons/md'
 import { FiMoreHorizontal } from 'react-icons/fi'
-import { AiFillPushpin } from 'react-icons/ai'
+import { VscListSelection } from 'react-icons/vsc'
+import { AiFillPushpin, AiOutlineStock } from 'react-icons/ai'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-import './index.less'
 import Checkbox from '../../components/Checkbox'
 import AddNew from '../../components/AddNew'
 import { ThemeValue } from '../../hooks/useTheme'
 import useWindowTop from '../../hooks/useWindowTop'
+import useLocalStorage, { storageKey } from '../../hooks/useLocalStorage'
+
+import './index.less'
 import EMPTY_IMAGE_LIGHT from '../../static/empty-light.svg'
 import EMPTY_IMAGE_DARK from '../../static/empty-dark.svg'
 
+export type TodoStatus = '0' | '1' | '2'
 export interface TodoItem {
 	id: string
 	content: string
@@ -22,6 +26,11 @@ export interface TodoItem {
 	description?: string
 	time?: moment.Moment
 	isLink?: boolean
+}
+
+export interface StorageTodoData {
+	todoList: TodoItem[]
+	currentStatus: TodoStatus
 }
 
 export interface MainProps {
@@ -48,13 +57,13 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any, background?: str
 	userSelect: 'none',
 	background: isDragging ? 'var(--button-hover-bg)' : 'none',
 	...draggableStyle
-})  
+})
 
 const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 	const statusWithIconMap: Record<string, JSX.Element> = {
-		0: <BsList size={18} />,
+		0: <VscListSelection size={18} />,
 		1: <MdOutlineFileDownloadDone size={18} />,
-		2: <BsListTask size={18} />
+		2: <AiOutlineStock size={18} />
 	}
 
 	const themeWithIconMap: Record<string, JSX.Element> = {
@@ -62,12 +71,14 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 		dark: <BsMoonStarsFill size={17} />,
 		auto: <BsLaptop size={17} />
 	}
+	// 数据存储
+	const { data, set } = useLocalStorage<StorageTodoData>(storageKey.TODO_DATA)
 	// 窗口置顶
 	const { isTop, toggleTop } = useWindowTop()
 	// todo list data
 	const [todoList, setTodoList] = useState<TodoItem[]>([])
 	// 当前 todo list 过滤状态
-	const [currentStatus, setCurrentStatus] = useState<string>('0')
+	const [currentStatus, setCurrentStatus] = useState<TodoStatus>('0')
 	// status 过滤后的 todo list
 	const filterList = useMemo(() => {
 		if (currentStatus === '0') {
@@ -107,21 +118,31 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 		}
 	}
 
-  const realTheme = useMemo(() => {
+	const realTheme = useMemo(() => {
 		return theme === 'auto' ? autoTheme : theme
 	}, [theme, autoTheme])
+
+	useEffect(() => {
+		console.log(data)
+		set({
+			currentStatus,
+			todoList
+		})
+	}, [todoList])
 
 	return (
 		<div className='main-container'>
 			<div className='header'>
 				<h1>Todo List</h1>
 				<div className='right'>
-					<Button type='text' onClick={() => toggleTop()}>
-						<AiFillPushpin
-							color={isTop ? 'var(--antd-wave-shadow-color)' : 'var(--text-color)'}
-							size={18}
-						></AiFillPushpin>
-					</Button>
+					<Tooltip placement='bottomRight' title={isTop ? '取消置顶' : '窗口置顶'}>
+						<Button type='text' onClick={() => toggleTop()}>
+							<AiFillPushpin
+								color={isTop ? 'var(--antd-wave-shadow-color)' : 'var(--text-color)'}
+								size={18}
+							></AiFillPushpin>
+						</Button>
+					</Tooltip>
 					<Dropdown
 						arrow
 						placement='bottomRight'
@@ -164,7 +185,7 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 								defaultSelectedKeys={[currentStatus]}
 								selectedKeys={[currentStatus]}
 								onClick={(item) => {
-									setCurrentStatus(item.key)
+									setCurrentStatus(item.key as TodoStatus)
 								}}
 								items={[
 									{
@@ -282,7 +303,7 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 						</Droppable>
 					</DragDropContext>
 				) : (
-					<Empty description={'全部都完成啦!!'} image={EMPTY_IMAGE[realTheme]} />
+					<Empty style={{ padding: '50px 0' }} description={'全部都完成啦!!'} image={EMPTY_IMAGE[realTheme]} />
 				)}
 			</div>
 			<AddNew cRef={addNewComRef} onAdd={handleAddNew}></AddNew>
