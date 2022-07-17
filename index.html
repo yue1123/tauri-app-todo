@@ -5,9 +5,38 @@
 		<link rel="icon" type="image/svg+xml" href="/src/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Vite App</title>
+		<style>
+			body {
+				background: #000;
+				user-select: none;
+				/* background: transparent; */
+				-webkit-app-region: drag;
+			}
+			[data-tauri-drag-region] {
+				cursor: move; /* Not all browsers support "grab" */
+				cursor: grab;
+				cursor: -webkit-grab;
+			}
+
+			[data-tauri-drag-region]:active {
+				cursor: grabbing;
+				cursor: -webkit-grabbing;
+			}
+		</style>
 	</head>
-	<body style="background: transparent">
-		<div id="root"></div>
+	<body data-tauri-drag-region draggable="true">
+		<div id="root">123123</div>
 		<script type="module" src="/src/main.tsx"></script>
+		<script>
+			console.log('zhiding ')
+			document.querySelector('#root').addEventListener('click', (e) => {
+				console.log(e)
+				e.preventDefault()
+			})
+			// document.body.addEventListener('mousedown', (e) => {
+			//   console.log(e);
+			// 	// e.preventDefault()
+			// })
+		</script>
 	</body>
 </html>
