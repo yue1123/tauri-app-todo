@@ -19,15 +19,18 @@
 
 ## windows
 
-<img style="width:24%" src='./screenshots/dark-empty.png'>
-<img style="width:24%" src='./screenshots/dark-list.png'>
-<img style="width:24%" src='./screenshots/light-empty.png'>
-<img style="width:24%" src='./screenshots/light-list.png'>
+<p>
+  <img style="width:24%" src='./screenshots/dark-empty.png'>
+  <img style="width:24%" src='./screenshots/dark-list.png'>
+  <img style="width:24%" src='./screenshots/light-empty.png'>
+  <img style="width:24%" src='./screenshots/light-list.png'>
+</p>
 
 [下载体验](./release/Todo%20List_0.1.0_x64_en-US.msi)
 
 ## macos (apple m1)
-🚧待完善
+
+🚧 待完善
 
 [下载体验](./release/Todo%20List_0.1.0_aarch64.dmg)
 
