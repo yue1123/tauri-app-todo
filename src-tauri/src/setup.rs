@@ -4,7 +4,6 @@ use window_vibrancy::{self, NSVisualEffectMaterial};
 /// setup
 pub fn init(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let win = app.get_window("main").unwrap();
-    print!("12312");
     // 仅在 macOS 下执行
     #[cfg(target_os = "macos")]
     window_vibrancy::apply_vibrancy(&win, NSVisualEffectMaterial::FullScreenUI)
