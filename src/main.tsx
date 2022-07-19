@@ -6,7 +6,6 @@ import './styles/light.css'
 import './styles/dark.css'
 import initLang from './utils/momentI18n.js'
 
-
 initLang()
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	// <React.StrictMode>
@@ -15,3 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 	// </ConfigProvider>
 	// </React.StrictMode>
 )
+
+if (import.meta.env.PROD) {
+	document.oncontextmenu = function () {
+		return false
+	}
+}
