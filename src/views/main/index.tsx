@@ -76,9 +76,9 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 	// 窗口置顶
 	const { isTop, toggleTop } = useWindowTop()
 	// todo list data
-	const [todoList, setTodoList] = useState<TodoItem[]>([])
+	const [todoList, setTodoList] = useState<TodoItem[]>(data?.todoList || [])
 	// 当前 todo list 过滤状态
-	const [currentStatus, setCurrentStatus] = useState<TodoStatus>('0')
+	const [currentStatus, setCurrentStatus] = useState<TodoStatus>(data?.currentStatus)
 	// status 过滤后的 todo list
 	const filterList = useMemo(() => {
 		if (currentStatus === '0') {
@@ -123,13 +123,11 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 	}, [theme, autoTheme])
 
 	useEffect(() => {
-		console.log(data)
 		set({
 			currentStatus,
 			todoList
 		})
-	}, [todoList])
-
+	}, [currentStatus, todoList])
 	return (
 		<div className='main-container'>
 			<div className='header'>
@@ -138,7 +136,9 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 					<Tooltip placement='bottomRight' title={isTop ? '取消置顶' : '窗口置顶'}>
 						<Button type='text' onClick={() => toggleTop()}>
 							<AiFillPushpin
-								color={isTop ? 'var(--antd-wave-shadow-color)' : 'var(--text-color)'}
+								color={
+									isTop ? 'var(--antd-wave-shadow-color)' : 'var(--text-color)'
+								}
 								size={18}
 							></AiFillPushpin>
 						</Button>
@@ -221,7 +221,11 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 							if (!result.destination) {
 								return
 							}
-							const items = reorder(todoList, result.source.index, result.destination.index)
+							const items = reorder(
+								todoList,
+								result.source.index,
+								result.destination.index
+							)
 							setTodoList(items)
 						}}
 					>
@@ -229,19 +233,33 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 							{(provided, snapshot) => (
 								<div {...provided.droppableProps} ref={provided.innerRef}>
 									{filterList.map((item, index) => (
-										<Draggable key={item.id} draggableId={item.id} index={index}>
+										<Draggable
+											key={item.id}
+											draggableId={item.id}
+											index={index}
+										>
 											{(provided, snapshot) => (
 												<div
 													ref={provided.innerRef}
 													{...provided.draggableProps}
-													style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+													style={getItemStyle(
+														snapshot.isDragging,
+														provided.draggableProps.style
+													)}
 													className={[
 														'todo-item',
-														`status-${item.isCompleted ? 'completed' : 'normal'}`,
+														`status-${
+															item.isCompleted
+																? 'completed'
+																: 'normal'
+														}`,
 														`${snapshot.isDragging ? 'dragging' : ''}`
 													].join(' ')}
 												>
-													<div className='handle-bar' {...provided.dragHandleProps}>
+													<div
+														className='handle-bar'
+														{...provided.dragHandleProps}
+													>
 														<MdDragIndicator />
 													</div>
 													<div className='content-container'>
@@ -255,7 +273,9 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 														/>
 														<div className='content'>
 															<p className='text'>{item.content}</p>
-															<p className='desc'>{item.description}</p>
+															<p className='desc'>
+																{item.description}
+															</p>
 															{item.time && (
 																<p className='time'>
 																	{item.time.calendar(today, {
@@ -273,10 +293,17 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 													<Dropdown
 														overlay={
 															<Menu
-																defaultSelectedKeys={[currentStatus]}
+																defaultSelectedKeys={[
+																	currentStatus
+																]}
 																selectedKeys={[currentStatus]}
 																onClick={(menuItem) => {
-																	handleMoreAction(menuItem.key as 'delete' | 'edit', item)
+																	handleMoreAction(
+																		menuItem.key as
+																			| 'delete'
+																			| 'edit',
+																		item
+																	)
 																}}
 																items={[
 																	{
@@ -291,7 +318,12 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 															/>
 														}
 													>
-														<Button className='more-op' type='text' size='small' icon={<FiMoreHorizontal />}></Button>
+														<Button
+															className='more-op'
+															type='text'
+															size='small'
+															icon={<FiMoreHorizontal />}
+														></Button>
 													</Dropdown>
 												</div>
 											)}
@@ -303,7 +335,11 @@ const Main: FC<MainProps> = ({ theme, autoTheme, changeTheme }) => {
 						</Droppable>
 					</DragDropContext>
 				) : (
-					<Empty style={{ padding: '50px 0' }} description={'全部都完成啦!!'} image={EMPTY_IMAGE[realTheme]} />
+					<Empty
+						style={{ padding: '50px 0' }}
+						description={'全部都完成啦!!'}
+						image={EMPTY_IMAGE[realTheme]}
+					/>
 				)}
 			</div>
 			<AddNew cRef={addNewComRef} onAdd={handleAddNew}></AddNew>
