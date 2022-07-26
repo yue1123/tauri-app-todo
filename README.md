@@ -20,10 +20,10 @@
 ## windows
 
 <p>
-  <img style="width:24%" src='./screenshots/dark-empty.png'>
-  <img style="width:24%" src='./screenshots/dark-list.png'>
-  <img style="width:24%" src='./screenshots/light-empty.png'>
-  <img style="width:24%" src='./screenshots/light-list.png'>
+  <img style="width:24%" src='./screenshots/win_empty_light.png'>
+  <img style="width:24%" src='./screenshots/win_light.png'>
+  <img style="width:24%" src='./screenshots/win_empty_dark.png'>
+  <img style="width:24%" src='./screenshots/win_dark.png'>
 </p>
 
 [下载体验](./release/Todo%20List_0.1.0_x64_en-US.msi)
