@@ -4,6 +4,7 @@ import { window as Window } from '@tauri-apps/api'
 export default function useWindowTop() {
   const [isTop, setIsTop] = useState<boolean>(false)
 	let curWin = Window.getCurrent()
+  
   return {
 		isTop,
 		toggleTop() {

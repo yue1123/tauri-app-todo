@@ -3,9 +3,11 @@ import './App.less'
 import { ConfigProvider } from 'antd'
 import { useEffect, useState } from 'react'
 import useTheme, { ACTION, ThemeValue } from './hooks/useTheme'
+import useOsType from './hooks/useOsType'
 
 function App() {
   const [config, dispatch] = useTheme()
+  const { osType } = useOsType()
   useEffect(() => {
 		let themeMedia: MediaQueryList = window.matchMedia('(prefers-color-scheme: light)')
 		const fn = (e: any) => {
@@ -28,7 +30,7 @@ function App() {
   const theme = config.theme === 'auto' ? config.autoTheme : config.theme
   // console.log(config, theme)
 	return (
-		<div className={`App ${theme}`}>
+		<div className={`App ${theme} ${osType}`}>
 			<ConfigProvider prefixCls={theme}>
 				<Main
 					theme={config.theme}
