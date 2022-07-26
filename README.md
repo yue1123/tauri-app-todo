@@ -30,7 +30,12 @@
 
 ## macos (apple m1)
 
-🚧 待完善
+<p>
+  <img style="width:24%" src='./screenshots/macos_empty_light.png'>
+  <img style="width:24%" src='./screenshots/macos_light.png'>
+  <img style="width:24%" src='./screenshots/macos_empty_dark.png'>
+  <img style="width:24%" src='./screenshots/macos_dark.png'>
+</p>
 
 [下载体验](./release/Todo%20List_0.1.0_aarch64.dmg)
 
