@@ -43,12 +43,12 @@
 
 ```bash
 git clone https://github.com/yue1123/tauri-app-todo
-```
 
-```bash
+cd ./tauri-app-todo
+
 pnpm install
-```
 
-```bash
+bash ./gen-theme-css.sh
+
 pnpm run tauri_dev
 ```
